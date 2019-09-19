@@ -1,4 +1,4 @@
-package powerex.backend.task.KafkaStreams;
+package powerex.backend.task.kafkastreams;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

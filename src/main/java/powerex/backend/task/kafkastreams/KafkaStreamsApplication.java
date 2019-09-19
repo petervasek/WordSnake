@@ -1,4 +1,4 @@
-package powerex.backend.task.KafkaStreams;
+package powerex.backend.task.kafkastreams;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -9,5 +9,4 @@ public class KafkaStreamsApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(KafkaStreamsApplication.class, args);
 	}
-
 }
