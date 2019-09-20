@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @Slf4j
-public class KafkaProducerConfig {
+class KafkaProducerConfig {
 
   static Properties producerProperties() {
     Properties p = new Properties();

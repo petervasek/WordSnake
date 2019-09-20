@@ -8,12 +8,11 @@ import powerex.backend.task.kafkastreams.generator.SentenceCreator;
 @Service
 public class KafkaProducer {
 
-  private KafkaProducerConfig p;
   private SentenceCreator sc = new SentenceCreator();
   private Producer<String, String> producer = new org.apache.kafka.clients.producer.KafkaProducer<>(KafkaProducerConfig.producerProperties());
 
   public void send() {
-    producer.send(new ProducerRecord<>("simple-message", "testKey", sc.getSentence()));
+    producer.send(new ProducerRecord<>("raw-sentence", "testKey", sc.getSentence()));
   }
 }
 
