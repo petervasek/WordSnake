@@ -24,7 +24,7 @@ public class InputSentenceTransformer {
     KStream<String, String> rawSentences = builder.stream(inputTopic);
 
     rawSentences.mapValues(
-        v ->v.replaceAll("[.,]", " ")
+        v ->v.replaceAll("[.,']", " ")
             .replaceAll(" +", " ")
             .toUpperCase()
     ).to(outputTopic);
