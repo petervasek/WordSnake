@@ -5,6 +5,7 @@ import java.util.Collections;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
+import powerex.backend.task.kafkastreams.generator.WordSnakeGenerator;
 
 @Slf4j
 public class KafkaConsumer {
@@ -25,7 +26,7 @@ public class KafkaConsumer {
       count++;
       records.forEach(record -> log.info(WordSnakeGenerator.getSnake(record.value())));
       consumer.commitAsync();
-    } while (count <= 10);
+    } while (count <= 50);
 
     consumer.close();
     log.info("Consumer closed");
