@@ -15,6 +15,6 @@ class WordBank {
       "with", "focus", "According", "Quora",
       "post", "from", "2014,", "Kreps", "chose", "name", "the", "software",
       "after", "the", "author", "Franz", "because",
-      "system", "optimized", "for", "writing,", "and", "liked", "Kafka's", "work"
+      "system", "optimized", "for", "writing,", "and", "liked", "Kafka", "work"
   );
 }

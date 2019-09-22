@@ -3,6 +3,7 @@ package powerex.backend.task.kafkastreams.consumer;
 import java.time.Duration;
 import java.util.Collections;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.avro.generic.GenericRecord;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import powerex.backend.task.kafkastreams.generator.WordSnakeGenerator;
@@ -11,7 +12,7 @@ import powerex.backend.task.kafkastreams.generator.WordSnakeGenerator;
 public class KafkaConsumer {
 
   private static String inputTopic = "processed-sentence";
-  private static Consumer<String, String> consumer = new org.apache.kafka.clients.consumer.KafkaConsumer<>(KafkaConsumerConfig.consumerProperties());
+  private static Consumer<GenericRecord, GenericRecord> consumer = new org.apache.kafka.clients.consumer.KafkaConsumer<>(KafkaConsumerConfig.consumerProperties());
 
   public static void subscribe() {
     consumer.subscribe(Collections.singleton(inputTopic));
@@ -21,10 +22,10 @@ public class KafkaConsumer {
     int count = 0;
 
     do {
-      final ConsumerRecords<String, String> records =
+      final ConsumerRecords<GenericRecord, GenericRecord> records =
           consumer.poll(Duration.ofSeconds(3600));
       count++;
-      records.forEach(record -> log.info(WordSnakeGenerator.getSnake(record.value())));
+      records.forEach(record -> log.info(WordSnakeGenerator.getSnake(record.value().get("sentence").toString())));
       consumer.commitAsync();
     } while (count <= 50);
 
