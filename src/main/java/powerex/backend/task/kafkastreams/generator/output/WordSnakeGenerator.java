@@ -1,37 +1,41 @@
 package powerex.backend.task.kafkastreams.generator.output;
 
-import static powerex.backend.task.kafkastreams.generator.output.SnakeMoves.*;
+import static powerex.backend.task.kafkastreams.generator.output.SnakeMove.*;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import org.springframework.stereotype.Component;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
-@Component
+
 public class WordSnakeGenerator {
 
-  public String getSnake(String s) {
-    char[][] array = new char[s.length()][s.length()];
-    String[] words = s.split(" ");
+  private Random r = new Random();
+  private static final String EXCEPTION_SHARED_PART = "Unexpected value: ";
+
+  public String getSnake(String sentence) {
+    char[][] array = new char[sentence.length()][sentence.length()];
+    String[] words = sentence.split(" ");
     int[] yx = new int[] {0, 0};
-    SnakeMoves nextMove = INIT;
+    SnakeMove nextMove = INIT;
 
     /*if snake in random movement (UP, DOWN, LEFT, RIGHT) gets STUCK,
-    restart with simple path (only DOWN, LEFT, RIGHT)
-    generator is used */
+    restart with simple path generator (only DOWN, LEFT, RIGHT)
+    is used */
 
     for (String w: words) {
-      nextMove = getNextMove(array, s.length(), w, yx, nextMove, true);
+      nextMove = getNextMove(array, sentence.length(), w, yx, nextMove, true);
       if (nextMove != STUCK) {
         writeWord(array, w, yx, nextMove);
       }
       else {
-        array = new char[s.length()][s.length()];
+        array = new char[sentence.length()][sentence.length()];
         yx = new int[] {0, 0};
         nextMove = INIT;
 
         for (String w1: words) {
-          nextMove = getNextMove(array, s.length(), w1, yx, nextMove, false);
+          nextMove = getNextMove(array, sentence.length(), w1, yx, nextMove, false);
           writeWord(array, w1, yx, nextMove);
         }
 
@@ -39,66 +43,36 @@ public class WordSnakeGenerator {
       }
     }
 
-    return "\n" + convertCharArrayToString(array, s.length());
+    return "\n" + convertCharArrayToString(array, sentence.length());
   }
+  
+  private SnakeMove getNextMove(char[][] array, int arraySize,
+      String word, int[] yx, SnakeMove nextMove, boolean allowedUp) {
 
-  private void writeWord(char[][] array, String w, int[] yx, SnakeMoves m) {
-    switch(m){
-      case UP:
-        for(char c : w.toCharArray()) {
-          array[yx[0]--][yx[1]] = c;
-        }
-        yx[0]++;
-        break;
-      case RIGHT:
-        for(char c : w.toCharArray()) {
-          array[yx[0]][yx[1]++] = c;
-        }
-        yx[1]--;
-        break;
-      case DOWN:
-        for(char c : w.toCharArray()) {
-          array[yx[0]++][yx[1]] = c;
-        }
-        yx[0]--;
-        break;
-      case LEFT:
-        for(char c : w.toCharArray()) {
-          array[yx[0]][yx[1]--] = c;
-        }
-        yx[1]++;
-        break;
-      default:
-        throw new IllegalStateException("Unexpected value: " + m);
-    }
-  }
+    List<SnakeMove> possibleWays = new ArrayList<>();
 
-  private SnakeMoves getNextMove(char[][] array, int maxLength, String w, int[] yx, SnakeMoves m, boolean allowedUp) {
-    List<SnakeMoves> possibleWays = new ArrayList<>();
-    Random r = new Random();
-
-    switch (m) {
+    switch (nextMove) {
       case INIT:
         return RIGHT;
       case UP:
       case DOWN:
-        if (yx[1] + w.length() <= maxLength && !checkCollision(array, w, yx, RIGHT))
+        if (yx[1] + word.length() <= arraySize && checkNoCollision(array, word, yx, RIGHT))
           possibleWays.add(RIGHT);
-        if (yx[1] - w.length() >= 0 && !checkCollision(array, w, yx, LEFT))
+        if (yx[1] - word.length() >= 0 && checkNoCollision(array, word, yx, LEFT))
           possibleWays.add(LEFT);
         break;
       case RIGHT:
       case LEFT:
-        if (yx[0] - w.length() >= 0 && !checkCollision(array, w, yx, UP))
+        if (yx[0] - word.length() >= 0 && checkNoCollision(array, word, yx, UP))
           possibleWays.add(UP);
-        if (yx[0] + w.length() <= maxLength && !checkCollision(array, w, yx, DOWN))
+        if (yx[0] + word.length() <= arraySize && checkNoCollision(array, word, yx, DOWN))
           possibleWays.add(DOWN);
         break;
       default:
-        throw new IllegalStateException("Unexpected value: " + m);
+        throw new IllegalStateException(EXCEPTION_SHARED_PART + nextMove);
     }
 
-    if(!allowedUp && possibleWays.contains(UP)) {
+    if(!allowedUp) {
       possibleWays.remove(UP);
     }
 
@@ -108,43 +82,72 @@ public class WordSnakeGenerator {
     return possibleWays.get(r.nextInt(possibleWays.size()));
   }
 
-  private boolean checkCollision(char[][] array, String w, int[] yx, SnakeMoves m) {
+  private void writeWord(char[][] array, String word, int[] yx, SnakeMove nextMove) {
 
-    int gap = 5;
+    Stream<Character> letters = word.chars().mapToObj(c -> (char) c);
 
-    switch(m){
+    switch(nextMove){
       case UP:
-        for(int i = 1 ; i < w.length() + gap ; i++) {
-          if(yx[0] - i >= 0 && (int) array[yx[0] - i][yx[1]] != 0) {
-            return true;
-          }
-        }
+        letters.forEach(c ->
+            array[yx[0]--][yx[1]] = c
+        );
+        yx[0]++;
         break;
       case RIGHT:
-        for(int i = 1 ; i < w.length() + gap ; i++) {
-          if((int) array[yx[0]][yx[1] + i] != 0) {
-            return true;
-          }
-        }
+        letters.forEach(c ->
+          array[yx[0]][yx[1]++] = c
+        );
+        yx[1]--;
         break;
       case DOWN:
-        for(int i = 1 ; i < w.length() + gap ; i++) {
-          if((int) array[yx[0] + i][yx[1]] != 0) {
-            return true;
-          }
-        }
+        letters.forEach(c ->
+          array[yx[0]++][yx[1]] = c
+        );
+        yx[0]--;
         break;
       case LEFT:
-        for(int i = 1 ; i < w.length() + gap ; i++) {
-          if(yx[1] - i >= 0 && (int) array[yx[0]][yx[1] - i] != 0) {
-            return true;
-          }
-        }
+        letters.forEach(c ->
+          array[yx[0]][yx[1]--] = c
+        );
+        yx[1]++;
         break;
       default:
-        throw new IllegalStateException("Unexpected value: " + m);
+        throw new IllegalStateException(EXCEPTION_SHARED_PART + nextMove);
     }
-    return false;
+  }
+  
+  private boolean checkNoCollision(char[][] array, String word, int[] yx, SnakeMove nextMove) {
+
+    int gap = SnakeGeneratorConfig.MIN_GAP;
+
+    return IntStream.range(1, word.length() + gap)
+        .allMatch(i -> {
+          switch(nextMove) {
+            case UP:
+              if(yx[0] - i >= 0 && (int) array[yx[0] - i][yx[1]] != 0) {
+                return false;
+              }
+              break;
+            case RIGHT:
+              if((int) array[yx[0]][yx[1] + i] != 0) {
+                return false;
+              }
+              break;
+            case DOWN:
+              if((int) array[yx[0] + i][yx[1]] != 0) {
+                return false;
+              }
+              break;
+            case LEFT:
+              if(yx[1] - i >= 0 && (int) array[yx[0]][yx[1] - i] != 0) {
+                return false;
+              }
+              break;
+            default:
+              throw new IllegalStateException(EXCEPTION_SHARED_PART + nextMove);
+          }
+          return true;
+        });
   }
 
   private String convertCharArrayToString(char[][] array, int maxLength) {
