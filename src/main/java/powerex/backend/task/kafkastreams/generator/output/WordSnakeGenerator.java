@@ -46,12 +46,12 @@ public class WordSnakeGenerator {
     return "\n" + convertCharArrayToString(array, sentence.length());
   }
   
-  private SnakeMove getNextMove(char[][] array, int arraySize,
-      String word, int[] yx, SnakeMove nextMove, boolean allowedUp) {
+  SnakeMove getNextMove(char[][] array, int arraySize,
+      String word, int[] yx, SnakeMove actualMove, boolean allowedUp) {
 
     List<SnakeMove> possibleWays = new ArrayList<>();
 
-    switch (nextMove) {
+    switch (actualMove) {
       case INIT:
         return RIGHT;
       case UP:
@@ -69,7 +69,7 @@ public class WordSnakeGenerator {
           possibleWays.add(DOWN);
         break;
       default:
-        throw new IllegalStateException(EXCEPTION_SHARED_PART + nextMove);
+        throw new IllegalStateException(EXCEPTION_SHARED_PART + actualMove);
     }
 
     if(!allowedUp) {
@@ -82,7 +82,7 @@ public class WordSnakeGenerator {
     return possibleWays.get(r.nextInt(possibleWays.size()));
   }
 
-  private void writeWord(char[][] array, String word, int[] yx, SnakeMove nextMove) {
+  void writeWord(char[][] array, String word, int[] yx, SnakeMove nextMove) {
 
     Stream<Character> letters = word.chars().mapToObj(c -> (char) c);
 
@@ -116,41 +116,43 @@ public class WordSnakeGenerator {
     }
   }
   
-  private boolean checkNoCollision(char[][] array, String word, int[] yx, SnakeMove nextMove) {
+  boolean checkNoCollision(char[][] array, String word, int[] yx, SnakeMove nextMove) {
 
     int gap = SnakeGeneratorConfig.MIN_GAP;
+
+    /*i > word.length() || condition is stop for checking for gap behind borders*/
 
     return IntStream.range(1, word.length() + gap)
         .allMatch(i -> {
           switch(nextMove) {
             case UP:
-              if(yx[0] - i >= 0 && (int) array[yx[0] - i][yx[1]] != 0) {
-                return false;
+              if(i >= word.length() || (int) array[yx[0] - i][yx[1]] == 0) {
+                return true;
               }
               break;
             case RIGHT:
-              if((int) array[yx[0]][yx[1] + i] != 0) {
-                return false;
+              if(i >= word.length() || (int) array[yx[0]][yx[1] + i] == 0) {
+                return true;
               }
               break;
             case DOWN:
-              if((int) array[yx[0] + i][yx[1]] != 0) {
-                return false;
+              if(i >= word.length() || (int) array[yx[0] + i][yx[1]] == 0) {
+                return true;
               }
               break;
             case LEFT:
-              if(yx[1] - i >= 0 && (int) array[yx[0]][yx[1] - i] != 0) {
-                return false;
+              if(i >= word.length() || (int) array[yx[0]][yx[1] - i] == 0) {
+                return true;
               }
               break;
             default:
               throw new IllegalStateException(EXCEPTION_SHARED_PART + nextMove);
           }
-          return true;
+          return false;
         });
   }
 
-  private String convertCharArrayToString(char[][] array, int maxLength) {
+  String convertCharArrayToString(char[][] array, int maxLength) {
     StringBuilder result = new StringBuilder();
 
     for (int i = 0 ; i < getNumOfArrayLines(array, maxLength) ; i++){
@@ -161,7 +163,7 @@ public class WordSnakeGenerator {
     return result.toString();
   }
 
-  private int getNumOfArrayLines(char[][] array, int maxLength) {
+  int getNumOfArrayLines(char[][] array, int maxLength) {
 
     int lineCounter = 0;
 

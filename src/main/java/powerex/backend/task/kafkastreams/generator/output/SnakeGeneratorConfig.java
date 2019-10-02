@@ -5,6 +5,6 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 class SnakeGeneratorConfig {
 
-  static final Integer MIN_GAP = 5;
+  static final Integer MIN_GAP = 2;
 
 }
