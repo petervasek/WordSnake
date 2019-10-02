@@ -11,8 +11,11 @@ public class KafkaStreamsApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(KafkaStreamsApplication.class, args);
 
-		SentenceStream.streamRunner();
-		KafkaConsumer.subscribe();
-		KafkaConsumer.consume();
+		KafkaConsumer consumer = new KafkaConsumer();
+		SentenceStream stream = new SentenceStream();
+
+		stream.streamRunner();
+		consumer.subscribe();
+		consumer.consume();
 	}
 }

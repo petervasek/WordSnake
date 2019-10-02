@@ -5,10 +5,12 @@ import static powerex.backend.task.kafkastreams.generator.output.SnakeMoves.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import org.springframework.stereotype.Component;
 
+@Component
 public class WordSnakeGenerator {
 
-  public static String getSnake(String s) {
+  public String getSnake(String s) {
     char[][] array = new char[s.length()][s.length()];
     String[] words = s.split(" ");
     int[] yx = new int[] {0, 0};
@@ -40,7 +42,7 @@ public class WordSnakeGenerator {
     return "\n" + convertCharArrayToString(array, s.length());
   }
 
-  private static void writeWord(char[][] array, String w, int[] yx, SnakeMoves m) {
+  private void writeWord(char[][] array, String w, int[] yx, SnakeMoves m) {
     switch(m){
       case UP:
         for(char c : w.toCharArray()) {
@@ -71,7 +73,7 @@ public class WordSnakeGenerator {
     }
   }
 
-  private static SnakeMoves getNextMove(char[][] array, int maxLength, String w, int[] yx, SnakeMoves m, boolean allowedUp) {
+  private SnakeMoves getNextMove(char[][] array, int maxLength, String w, int[] yx, SnakeMoves m, boolean allowedUp) {
     List<SnakeMoves> possibleWays = new ArrayList<>();
     Random r = new Random();
 
@@ -106,7 +108,7 @@ public class WordSnakeGenerator {
     return possibleWays.get(r.nextInt(possibleWays.size()));
   }
 
-  private static boolean checkCollision(char[][] array, String w, int[] yx, SnakeMoves m) {
+  private boolean checkCollision(char[][] array, String w, int[] yx, SnakeMoves m) {
 
     int gap = 5;
 
@@ -145,7 +147,7 @@ public class WordSnakeGenerator {
     return false;
   }
 
-  private static String convertCharArrayToString(char[][] array, int maxLength) {
+  private String convertCharArrayToString(char[][] array, int maxLength) {
     StringBuilder result = new StringBuilder();
 
     for (int i = 0 ; i < getNumOfArrayLines(array, maxLength) ; i++){
@@ -156,7 +158,7 @@ public class WordSnakeGenerator {
     return result.toString();
   }
 
-  private static int getNumOfArrayLines(char[][] array, int maxLength) {
+  private int getNumOfArrayLines(char[][] array, int maxLength) {
 
     int lineCounter = 0;
 

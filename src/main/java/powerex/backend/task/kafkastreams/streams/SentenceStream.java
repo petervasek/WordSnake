@@ -17,10 +17,10 @@ import powerex.backend.task.kafkastreams.common.SchemaFields;
 @Slf4j
 public class SentenceStream {
 
-  private static StreamsBuilder builder = new StreamsBuilder();
+  private final StreamsBuilder builder = new StreamsBuilder();
 
   @Bean
-  public static void streamRunner() {
+  public void streamRunner() {
 
     KStream<GenericRecord, GenericRecord> rawSentences = builder.stream(KafkaConfig.RAW_DATA_TOPIC);
 
