@@ -1,11 +1,13 @@
-package powerex.backend.task.kafkastreams.generator;
+package powerex.backend.task.kafkastreams.generator.input;
 
 import java.util.Arrays;
 import java.util.List;
+import lombok.experimental.UtilityClass;
 
+@UtilityClass
 class WordBank {
 
-  List<String> wordList = Arrays.asList(
+  static List<String> wordList = Arrays.asList(
       "Apache,", "Kafka.", "was      originally", "developed,", "LinkedIn,",
       "and", "was", "subsequently", "open.", "sourced", "early", "2011.",
       "Graduation", "from", "the", "Apache", "Incubator", "occurred",

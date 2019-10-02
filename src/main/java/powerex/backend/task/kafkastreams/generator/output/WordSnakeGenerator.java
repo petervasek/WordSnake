@@ -1,6 +1,6 @@
-package powerex.backend.task.kafkastreams.generator;
+package powerex.backend.task.kafkastreams.generator.output;
 
-import static powerex.backend.task.kafkastreams.generator.SnakeMoves.*;
+import static powerex.backend.task.kafkastreams.generator.output.SnakeMoves.*;
 
 import java.util.ArrayList;
 import java.util.List;

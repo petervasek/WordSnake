@@ -1,10 +1,9 @@
-package powerex.backend.task.kafkastreams;
+package powerex.backend.task.kafkastreams.generator.input;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import powerex.backend.task.kafkastreams.producer.KafkaProducer;
-
 
 @RestController
 public class SentenceGeneratorApi {

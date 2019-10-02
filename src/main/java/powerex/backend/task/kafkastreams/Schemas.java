@@ -1,8 +1,10 @@
 package powerex.backend.task.kafkastreams;
 
+import lombok.experimental.UtilityClass;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
 
+@UtilityClass
 public class Schemas {
 
   public static Schema keySchema = SchemaBuilder.builder()

@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
-import powerex.backend.task.kafkastreams.generator.WordSnakeGenerator;
+import powerex.backend.task.kafkastreams.generator.output.WordSnakeGenerator;
 
 @Slf4j
 public class KafkaConsumer {

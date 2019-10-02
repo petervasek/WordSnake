@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 
 @Slf4j
-public class InputSentenceTransformer {
+public class SentenceStream {
 
   private static StreamsBuilder builder = new StreamsBuilder();
 
@@ -43,7 +43,7 @@ public class InputSentenceTransformer {
 
     try {
       KafkaStreams streams = new KafkaStreams(topology,
-          InputSentenceTransformerConfig.streamProperties());
+          SentenceStreamConfig.streamProperties());
       streams.start();
     } catch (IllegalStateException | StreamsException e) {
       log.error(e.toString());

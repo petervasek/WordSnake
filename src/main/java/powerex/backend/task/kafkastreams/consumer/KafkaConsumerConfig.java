@@ -5,7 +5,7 @@ import io.confluent.kafka.serializers.KafkaAvroDeserializer;
 import java.util.Properties;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 
-public class KafkaConsumerConfig {
+class KafkaConsumerConfig {
 
   static Properties consumerProperties() {
     Properties p = new Properties();

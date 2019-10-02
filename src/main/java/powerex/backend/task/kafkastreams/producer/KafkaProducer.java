@@ -4,14 +4,16 @@ import static powerex.backend.task.kafkastreams.Schemas.keySchema;
 import static powerex.backend.task.kafkastreams.Schemas.valueSchema;
 
 import java.time.Instant;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.avro.generic.GenericRecordBuilder;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.stereotype.Service;
-import powerex.backend.task.kafkastreams.generator.SentenceCreator;
+import powerex.backend.task.kafkastreams.generator.input.SentenceCreator;
 
 @Service
+@Slf4j
 public class KafkaProducer {
 
   private SentenceCreator sc = new SentenceCreator();
@@ -22,7 +24,7 @@ public class KafkaProducer {
 
     String outputTopic = "raw-sentence";
 
-    System.out.println(Instant.now().toString());
+    log.info(Instant.now().toString());
 
     GenericRecord key = new GenericRecordBuilder(keySchema)
         .set("time", Instant.now().toString())
