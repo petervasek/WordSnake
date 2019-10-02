@@ -1,6 +1,6 @@
 package powerex.backend.task.kafkastreams.streams;
 
-import static powerex.backend.task.kafkastreams.Schemas.valueSchema;
+import static powerex.backend.task.kafkastreams.common.Schemas.valueSchema;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.avro.generic.GenericRecord;
@@ -10,9 +10,9 @@ import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.errors.StreamsException;
 import org.apache.kafka.streams.kstream.KStream;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
+import powerex.backend.task.kafkastreams.common.KafkaConfig;
+import powerex.backend.task.kafkastreams.common.SchemaFields;
 
 @Slf4j
 public class SentenceStream {
@@ -21,23 +21,20 @@ public class SentenceStream {
 
   @Bean
   public static void streamRunner() {
-    String inputTopic = "raw-sentence";
-    String outputTopic = "processed-sentence";
-    Logger log = LoggerFactory.getLogger("stream-logger");
 
-    KStream<GenericRecord, GenericRecord> rawSentences = builder.stream(inputTopic);
+    KStream<GenericRecord, GenericRecord> rawSentences = builder.stream(KafkaConfig.RAW_DATA_TOPIC);
 
     rawSentences.mapValues(
-        v ->v.get("sentence").toString()
+        v ->v.get(SchemaFields.VALUE_SENTENCE_FIELD_NAME).toString()
             .replaceAll("[.,]", " ")
             .replaceAll(" +", " ")
             .toUpperCase()
         )
         .mapValues(v -> new GenericRecordBuilder(valueSchema)
-            .set("sentence", v)
+            .set(SchemaFields.VALUE_SENTENCE_FIELD_NAME, v)
             .build()
         )
-        .to(outputTopic);
+        .to(KafkaConfig.PROCESSED_DATA_TOPIC);
 
     Topology topology = builder.build();
 
