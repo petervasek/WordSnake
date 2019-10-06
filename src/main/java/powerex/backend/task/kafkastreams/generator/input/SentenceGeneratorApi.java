@@ -3,14 +3,14 @@ package powerex.backend.task.kafkastreams.generator.input;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-import powerex.backend.task.kafkastreams.producer.KafkaProducer;
+import powerex.backend.task.kafkastreams.producer.KafkaProducerRawData;
 
 @RestController
 public class SentenceGeneratorApi {
 
-  private final KafkaProducer kafkaProducer;
+  private final KafkaProducerRawData kafkaProducer;
 
-  public SentenceGeneratorApi(KafkaProducer kafkaProducer) {
+  public SentenceGeneratorApi(KafkaProducerRawData kafkaProducer) {
     this.kafkaProducer = kafkaProducer;
   }
 
@@ -19,4 +19,5 @@ public class SentenceGeneratorApi {
     kafkaProducer.send();
     return ResponseEntity.ok("");
   }
+
 }

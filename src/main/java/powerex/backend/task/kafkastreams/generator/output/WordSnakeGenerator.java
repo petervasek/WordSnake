@@ -8,10 +8,9 @@ import java.util.Random;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-
 public class WordSnakeGenerator {
 
-  private Random r = new Random();
+  private Random rand = new Random();
   private static final String EXCEPTION_SHARED_PART = "Unexpected value: ";
 
   public String getSnake(String sentence) {
@@ -79,7 +78,7 @@ public class WordSnakeGenerator {
     if (possibleWays.isEmpty()) {
       return STUCK;
     }
-    return possibleWays.get(r.nextInt(possibleWays.size()));
+    return possibleWays.get(rand.nextInt(possibleWays.size()));
   }
 
   void writeWord(char[][] array, String word, int[] yx, SnakeMove nextMove) {
@@ -120,7 +119,7 @@ public class WordSnakeGenerator {
 
     int gap = SnakeGeneratorConfig.MIN_GAP;
 
-    /*i > word.length() || condition is stop for checking for gap behind borders*/
+    /*"i > word.length() ||" condition is stop for checking for gap behind borders*/
 
     return IntStream.range(1, word.length() + gap)
         .allMatch(i -> {

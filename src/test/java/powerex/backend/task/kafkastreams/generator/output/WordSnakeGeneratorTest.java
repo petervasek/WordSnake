@@ -297,9 +297,12 @@ public class WordSnakeGeneratorTest {
   public void getSnake() {
 
     String result = snakeGenerator.getSnake(TEST_SENTENCE);
+    String emptyResult = snakeGenerator.getSnake("");
 
     assertThat(result.length()).isNotZero();
-    //log.info(result);
+    assertThat(emptyResult).containsOnlyWhitespaces();
+
+    log.info(result);
   }
 
 }

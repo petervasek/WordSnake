@@ -1,20 +1,29 @@
 package powerex.backend.task.kafkastreams.common;
 
-import lombok.experimental.UtilityClass;
+import lombok.Data;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
-@UtilityClass
+@Component
+@Data
 public class KafkaConfig {
 
-  public static final String KAFKA_BROKERS = "localhost:9091,localhost:9092,localhost:9093";
+  @Value("${kafka.bootstrap-servers}")
+  private String kafkaBrokers;
 
-  public static final String SCHEMA_REGISTRY_URL = "http://localhost:8081";
+  @Value("${kafka.schema-registry.url}")
+  private String schemaRegistryUrl;
 
-  public static final String STREAMS_APP_ID = "sentence-transformer-stream";
+  @Value("${kafka.app.stream-id}")
+  private String streamId;
 
-  public static final String CONSUMER_GROUP_ID = "processed-sentence-consumer";
+  @Value("${kafka.consumer.group-id}")
+  private String consumerGroupId;
 
-  public static final String PROCESSED_DATA_TOPIC = "processed-sentence";
+  @Value("${kafka.topics.raw-data}")
+  private String rawDataTopic;
 
-  public static final String RAW_DATA_TOPIC = "raw-sentence";
+  @Value("${kafka.topics.processed-data}")
+  private String processedDataTopic;
 
 }

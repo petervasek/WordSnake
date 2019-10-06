@@ -4,23 +4,25 @@ import static powerex.backend.task.kafkastreams.common.Schemas.keySchema;
 import static powerex.backend.task.kafkastreams.common.Schemas.valueSchema;
 
 import java.time.Instant;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.avro.generic.GenericRecordBuilder;
-import org.apache.kafka.clients.producer.Producer;
+import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
-import org.springframework.stereotype.Service;
 import powerex.backend.task.kafkastreams.common.KafkaConfig;
 import powerex.backend.task.kafkastreams.common.SchemaFields;
 import powerex.backend.task.kafkastreams.generator.input.SentenceCreator;
 
-@Service
 @Slf4j
-public class KafkaProducer {
+@AllArgsConstructor
+public class KafkaProducerRawData {
 
-  private SentenceCreator sc = new SentenceCreator();
+  private final KafkaConfig kafkaConfig;
 
-  private Producer<GenericRecord, GenericRecord> producer = new org.apache.kafka.clients.producer.KafkaProducer<>(KafkaProducerConfig.producerProperties());
+  private final KafkaProducer<GenericRecord, GenericRecord> producer;
+
+  private final SentenceCreator sentenceCreator;
 
   public void send() {
 
@@ -31,10 +33,12 @@ public class KafkaProducer {
         .build();
 
     GenericRecord value = new GenericRecordBuilder(valueSchema)
-        .set(SchemaFields.VALUE_SENTENCE_FIELD_NAME, sc.getSentence())
+        .set(SchemaFields.VALUE_SENTENCE_FIELD_NAME, sentenceCreator.getSentence())
         .build();
 
-    producer.send(new ProducerRecord<>(KafkaConfig.RAW_DATA_TOPIC, key, value));
+    log.info("Sentence generated: " + value.get(SchemaFields.VALUE_SENTENCE_FIELD_NAME));
+
+    producer.send(new ProducerRecord<>(kafkaConfig.getRawDataTopic(), key, value));
   }
 }
 
